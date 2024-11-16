@@ -16,7 +16,10 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
+import meujogo.Menu;
 
 public class Fase extends JPanel implements ActionListener{
 	private Image fundo;
@@ -194,7 +197,7 @@ public class Fase extends JPanel implements ActionListener{
 	        graficos.drawImage(fundo, 0, 0,  null);
 			graficos.drawString("Pontuação: "+ pontuacao, 800, 100);
 			if (mostrarTexto) {
-                graficos.drawString("A = Atirar | SPACEBAR = Turbo", 40, 20);
+                graficos.drawString("A = Atirar | SPACEBAR = Turbo | Esc = Pause", 40, 20);
             }
 			if (mostrarTimer) {
 		        graficos.drawString(""+contador, player.getX(), player.getY()); 
@@ -688,12 +691,26 @@ public class Fase extends JPanel implements ActionListener{
 		}
 	
 	private class TecladoAdapter extends KeyAdapter {
+		boolean stop =true;
 		@Override
 		public void keyPressed(KeyEvent e) {
 			player.keyPressed(e);
+			if(e.getKeyCode() == KeyEvent.VK_ESCAPE && emJogo) {
+	        	if(stop == true) {
+	        		stop = false;
+	        		timer.stop();
+	        		tocar.stop();
+	        	}else {
+	        		stop = true;
+	        		timer.start();
+	        		tocar.play(true);
+	        	}
+	            
+	        }
 			if (e.getKeyCode() == KeyEvent.VK_ENTER && !emJogo) {
                 reiniciarFase();
             }
+			
 		}
 
 		@Override

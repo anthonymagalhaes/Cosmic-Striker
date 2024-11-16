@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
 
+import meujogo.Container;
+import meujogo.Menu;
+
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 public class Jogador implements ActionListener  {
     private int x, y;
@@ -25,6 +29,7 @@ public class Jogador implements ActionListener  {
     private static final int TEMPO_TURBO = 5000; 
     private static int nivel = 1;
     private SoundPlayer tocarTiro = new SoundPlayer("res\\TiroSpace.wav");
+    private SoundPlayer turboActivated = new SoundPlayer("res\\turbo.wav");
     private boolean turboDisponivel = true; 
     private Timer cooldownTurboTimer;
     private static final int TEMPO_COOLDOWN = 20000; 
@@ -68,7 +73,7 @@ public class Jogador implements ActionListener  {
             isTurbo = true;
             ImageIcon referencia = new ImageIcon("res\\naveTurbo.gif");
             imagem = referencia.getImage();
-            
+            turboActivated.play(false);
          
             turboDisponivel = false;
             cooldownTurboTimer = new Timer(TEMPO_COOLDOWN, new ActionListener() {
@@ -99,7 +104,7 @@ public class Jogador implements ActionListener  {
     }
     public void Explodindo() {
     	isTurbo = false;
-    	
+    	turboDisponivel = false;
         String basePath = "res\\Explosão.gif";
         ImageIcon referencia = new ImageIcon(basePath);
         imagem = referencia.getImage();
@@ -166,7 +171,7 @@ public class Jogador implements ActionListener  {
     public void keyPressed(KeyEvent tecla) {
         int codigo = tecla.getKeyCode();
 
-        if (codigo == KeyEvent.VK_SPACE) {
+        if (codigo == KeyEvent.VK_SPACE ) {
             turbo();
         }
         if (codigo == KeyEvent.VK_A) {

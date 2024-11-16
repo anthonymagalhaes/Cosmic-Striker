@@ -26,8 +26,6 @@ public class Enemy1 {
 		this.x = x;
 		this.y = y;
 		isVisible = true;
-		
-		
 	}
 	
 	public void load() {
