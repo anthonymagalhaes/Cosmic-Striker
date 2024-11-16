@@ -262,32 +262,32 @@ public class Fase extends JPanel implements ActionListener{
 			
 			
 		}
-		if(emJogo == false) {
-			
-			int valor = SalvarJogo.loadHighScore();
-			
-			
-			if(valor > pontuacao) {
-				SalvarJogo.saveHighScore(pontuacao);
-			}
-			if(fim) {
-				ImageIcon fimJogo = new ImageIcon("res\\fimdejogo.png");
-				graficos.drawImage(fimJogo.getImage(),0,0,null);
-				graficos.drawString("Melhor Pontuação: "+ valor, 700, 60);
-				graficos.drawString("Pontuação: "+ pontuacao, 800, 100);
-				graficos.drawString("Pressione ENTER", 100, 100);
-			
-			}else {
-			
-			
-				ImageIcon fimJogo = new ImageIcon("res\\fimdejogo2.png");
-				graficos.drawImage(fimJogo.getImage(),0,0,null);
-				graficos.drawString("Melhor Pontuação: "+ valor, 700, 60);
-				graficos.drawString("Pontuação: "+ pontuacao, 800, 100);
-				graficos.drawString("Pressione ENTER", 100, 100);
-			}
-	      
+		
+		if (emJogo == false) {
+		
+		    int valor = SalvarJogo.lerNumeroDoArquivo();
+		    
+		   
+		    if (pontuacao > valor) {
+		     
+		        SalvarJogo.atualizarArquivo(pontuacao);
+		        valor = pontuacao;  
+		    }
+		    if (fim) {
+		        ImageIcon fimJogo = new ImageIcon("res\\fimdejogo.png");
+		        graficos.drawImage(fimJogo.getImage(), 0, 0, null);
+		        graficos.drawString("Melhor Pontuação: " + valor, 700, 60);
+		        graficos.drawString("Pontuação: " + pontuacao, 800, 100);
+		        graficos.drawString("Pressione ENTER", 100, 100);
+		    } else {
+		        ImageIcon fimJogo = new ImageIcon("res\\fimdejogo2.png");
+		        graficos.drawImage(fimJogo.getImage(), 0, 0, null);
+		        graficos.drawString("Melhor Pontuação: " + valor, 700, 60);
+		        graficos.drawString("Pontuação: " + pontuacao, 800, 100);
+		        graficos.drawString("Pressione ENTER", 100, 100);
+		    }
 		}
+
 		
 		g.dispose();
 	}
