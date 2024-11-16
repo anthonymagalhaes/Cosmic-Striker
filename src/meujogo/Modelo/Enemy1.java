@@ -31,7 +31,7 @@ public class Enemy1 {
 	}
 	
 	public void load() {
-		ImageIcon referencia = new ImageIcon("res//Enemy.png");
+		ImageIcon referencia = new ImageIcon("res//Enemy.gif");
 		imagem= referencia.getImage();
 			
 		this.largura = 100;
