@@ -61,7 +61,7 @@ public class SalvarJogo {
     public static void atualizarArquivo(int numero) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(CAMINHO_ARQUIVO))) {
             writer.write(String.valueOf(numero)); 
-            System.out.println("Arquivo atualizado com o número: " + numero);
+            
         } catch (IOException e) {
             System.out.println("Erro ao atualizar o arquivo: " + e.getMessage());
         }

@@ -4,28 +4,39 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
+import java.util.List;
+import java.util.Random;
+
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
 public class Boss1 {
-
+	private String[] musicas = {
+	        "/Damage1.wav",
+	        "/Damage2.wav",
+	    };
     private Image imagem;
     private Image imagemNormal;  
     private Image imagemDano;    
     private int x, y;
     private int largura, altura;
     private boolean isVisible;
-    private int life = 80;
+    private int life = 120;
     private final int velocidade = 2; 
     private boolean movendo = true;
     private boolean atingido = false;  
     private boolean derrotado;
-    private SoundPlayer tocarfim = new SoundPlayer("res\\trumpet-fanfare-royal-entrance-soundroll-1-00-09.wav");
-    private SoundPlayer tocarBoss = new SoundPlayer("res\\BossEntrance.wav");
+    private SoundPlayer tocarfim ;
+    private SoundPlayer damage;
+    private URL tocarfimURL,damageURL;
     private boolean isTilting = false;
-    private int tiltOffset = 10; // Quantidade do tilt (pixels)
+    private int tiltOffset = 10; 
     private int originalX;
     public Boss1(int x, int y) {
+    	tocarfim = new SoundPlayer();
+    	damage = new SoundPlayer();
+    	tocarfimURL = getClass().getResource("/trumpet-fanfare-royal-entrance-soundroll-1-00-09.wav");
         this.x = x;
         this.y = y;
         derrotado = false;
@@ -61,10 +72,21 @@ public class Boss1 {
     public boolean isTilting() {
         return isTilting;
     }
+    private void randomizarDamage() {
+    	Random rand = new Random();
+   	    damage = new SoundPlayer();
+        int musicaAleatoriaIndex = rand.nextInt(musicas.length);
+        
+        damageURL = getClass().getResource(musicas[musicaAleatoriaIndex]);
+                 
+            damage.setFile(damageURL);  
+            damage.play(false); 
+    }
+  
     public void load() {
     	
-        ImageIcon referenciaNormal = new ImageIcon("res\\Boss.png"); 
-        ImageIcon referenciaDano = new ImageIcon("res\\BossDano.png"); 
+        ImageIcon referenciaNormal = new ImageIcon(getClass().getClassLoader().getResource("Boss.png")); 
+        ImageIcon referenciaDano = new ImageIcon(getClass().getClassLoader().getResource("BossDano.png")); 
         
         imagemNormal = referenciaNormal.getImage();
         imagemDano = referenciaDano.getImage();
@@ -85,14 +107,14 @@ public class Boss1 {
         } else {
             this.isVisible = false; 
             this.derrotado = true;
-            tocarBoss.stop();
+            
             tocarfim.play(false);
         }
     }
 
    
     public void levarDano() {
-      
+    	randomizarDamage();
         imagem = imagemDano;
         atingido = true;
         new Timer(500, e -> {
@@ -111,12 +133,17 @@ public class Boss1 {
         if (movendo) {
             this.x -= velocidade; 
             if (this.x <= 800) { 
-            	tocarBoss.play(true);
+            	
                 movendo = false; 
             }
         }
     }
-
+	public void atacar() {
+	    
+	    if (System.currentTimeMillis() % 1000 == 0) {
+	    	
+	    }
+	}
     
     public void setAtingido(boolean atingido) {
 		this.atingido = atingido;
@@ -127,7 +154,6 @@ public class Boss1 {
         return new Rectangle(x, y, largura, altura);
     }
 
-    // Getter e setter para a visibilidade do boss
     public boolean isVisible() {
         return isVisible;
     }
@@ -136,7 +162,7 @@ public class Boss1 {
         this.isVisible = isVisible;
     }
 
-    // Getters para a posição e a imagem do boss
+    
     public int getX() {
         return x;
     }
@@ -158,6 +184,8 @@ public class Boss1 {
     public void setLife(int life) {
         this.life = life;
     }
+   
+	
 
 	public boolean isDerrotado() {
 		return derrotado;

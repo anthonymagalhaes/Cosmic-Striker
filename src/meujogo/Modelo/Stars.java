@@ -25,13 +25,13 @@ public class Stars {
 	
 	public void load() {
 		if(VELOCIDADE == 5) {
-			ImageIcon referencia = new ImageIcon("res\\estrela.png");
+			ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("estrela.png"));
 			imagem= referencia.getImage();
 				
 			this.largura = imagem.getWidth(null);
 			imagem.getHeight(null);
 		}else {
-			ImageIcon referencia = new ImageIcon("res\\effect.png");
+			ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("effect.png"));
 			imagem= referencia.getImage();
 					
 			this.largura = imagem.getWidth(null);

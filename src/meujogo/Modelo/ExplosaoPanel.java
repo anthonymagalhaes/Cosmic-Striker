@@ -17,7 +17,7 @@ public class ExplosaoPanel extends JPanel {
         frames = new ArrayList<>();
         // Carregar imagens da explosão
         for (int i = 1; i <= 9; i++) { // Supondo 10 quadros
-            ImageIcon icon = new ImageIcon("res\\explosion\\sprite" + i + ".png");
+            ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("explosion\\sprite" + i + ".png"));
             frames.add(icon.getImage());
         }
         // Configurar o Timer para atualizar os quadros

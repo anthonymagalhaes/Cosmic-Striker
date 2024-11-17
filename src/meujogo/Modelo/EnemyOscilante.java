@@ -21,7 +21,7 @@ public class EnemyOscilante {
     }
 
     public void load() {
-        ImageIcon referencia = new ImageIcon("res//EnemyOscilante.gif");
+        ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("EnemyOscilante.gif"));
         imagem = referencia.getImage();
 
         this.largura = imagem.getWidth(null);

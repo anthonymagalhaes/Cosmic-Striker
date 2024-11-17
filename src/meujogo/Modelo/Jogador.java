@@ -5,17 +5,22 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import javax.swing.Timer;
 
-import meujogo.Container;
-import meujogo.Menu;
-
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 
 public class Jogador implements ActionListener  {
+	private String[] musicas = {
+	        "/TiroSpace.wav",
+	        "/tiro2.wav",
+	        "/tiro3.wav"
+	        
+	    };
     private int x, y;
     private int dx, dy;
     private Image imagem;
@@ -28,8 +33,9 @@ public class Jogador implements ActionListener  {
     private static final int INTERVALO_DISPARO = 250;
     private static final int TEMPO_TURBO = 5000; 
     private static int nivel = 1;
-    private SoundPlayer tocarTiro = new SoundPlayer("res\\TiroSpace.wav");
-    private SoundPlayer turboActivated = new SoundPlayer("res\\turbo.wav");
+    private SoundPlayer tocarTiro;
+    private SoundPlayer turboActivated ;
+    private URL turboActivatedURL,tocarTiroURL;
     private boolean turboDisponivel = true; 
     private Timer cooldownTurboTimer;
     private static final int TEMPO_COOLDOWN = 20000; 
@@ -39,7 +45,10 @@ public class Jogador implements ActionListener  {
         this.nivel = 1;
         this.isVisivel = true;
         isTurbo = false;
-
+        tocarTiro = new SoundPlayer();
+        turboActivated =new SoundPlayer();
+        turboActivatedURL = getClass().getResource("/turbo.wav");
+        turboActivated.setFile(turboActivatedURL);
         tiros = new ArrayList<Tiro>();
         disparoTimer = new Timer(INTERVALO_DISPARO, new ActionListener() {
             @Override
@@ -66,12 +75,21 @@ public class Jogador implements ActionListener  {
     public void actionPerformed(ActionEvent e) {
         
     }
-
+    private void randomizarTiro() {
+    	 Random rand = new Random();
+    	 tocarTiro = new SoundPlayer();
+         int musicaAleatoriaIndex = rand.nextInt(musicas.length);
+         
+         tocarTiroURL = getClass().getResource(musicas[musicaAleatoriaIndex]);
+                  
+         tocarTiro.setFile(tocarTiroURL);  
+         tocarTiro.play(false); 
+    }
   
     public void turbo() {
     	if (!isTurbo && turboDisponivel) {
             isTurbo = true;
-            ImageIcon referencia = new ImageIcon("res\\naveTurbo.gif");
+            ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("naveTurbo.gif"));
             imagem = referencia.getImage();
             turboActivated.play(false);
          
@@ -99,20 +117,19 @@ public class Jogador implements ActionListener  {
  
     public void desativarTurbo() {
         isTurbo = false;
-        ImageIcon referencia = new ImageIcon("res\\nave.png");
+        ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("nave.png"));
         imagem = referencia.getImage();
     }
     public void Explodindo() {
     	isTurbo = false;
     	turboDisponivel = false;
-        String basePath = "res\\Explosão.gif";
-        ImageIcon referencia = new ImageIcon(basePath);
+        ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("Explosão.gif"));
         imagem = referencia.getImage();
         imagem.flush();
     }
 
     public void load() {
-        ImageIcon referencia = new ImageIcon("res\\nave.png");
+        ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("nave.png"));
         imagem = referencia.getImage();
         altura = imagem.getHeight(null);
         largura = 60;
@@ -125,29 +142,32 @@ public class Jogador implements ActionListener  {
 
     public void tirosTriplos() {
         if (!isTurbo && !disparoTimer.isRunning()) {
+        	randomizarTiro();
             this.tiros.add(new Tiro(x + largura, y + (altura / 2) - 25));
             this.tiros.add(new Tiro(x + largura - 1, y + (altura / 2) + 1));
             this.tiros.add(new Tiro(x + largura - 2, y + (altura / 2) + 25));
-            this.tocarTiro.play(false);
+            
             disparoTimer.start();
         }
     }
 
     public void tirosDuplos() {
         if (!isTurbo && !disparoTimer.isRunning()) {
-        	this.tocarTiro.stop();
+        	
+        	randomizarTiro();
             this.tiros.add(new Tiro(x + largura, y + (altura / 2) - 17));
             this.tiros.add(new Tiro(x + largura - 1, y + (altura / 2) + 17));
-            this.tocarTiro.play(false);
+            
             disparoTimer.start();
         }
     }
 
     public void tirosSimples() {
         if (!isTurbo && !disparoTimer.isRunning()) {
-        	this.tocarTiro.stop();
+        	
+        	randomizarTiro();
             this.tiros.add(new Tiro(x + largura, y + (altura / 2)));
-            this.tocarTiro.play(false);
+            
             disparoTimer.start();
         }
     }

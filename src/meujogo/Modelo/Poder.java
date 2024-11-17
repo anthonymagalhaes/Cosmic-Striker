@@ -30,7 +30,7 @@ public class Poder {
 	}
 	
 	public void load() {
-		ImageIcon referencia = new ImageIcon("res//Poder.png");
+		ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("Poder.png"));
 		imagem= referencia.getImage();
 				
 		this.largura = imagem.getWidth(null);

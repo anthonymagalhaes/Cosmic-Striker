@@ -2,6 +2,7 @@ package meujogo.Modelo;
 
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -11,8 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -22,6 +25,11 @@ import javax.swing.Timer;
 import meujogo.Menu;
 
 public class Fase extends JPanel implements ActionListener{
+	private String[] musicas = {
+	        "/musica1.wav",
+	        "/musica2.wav",
+	        
+	    };
 	private Image fundo;
 	private Jogador player;
 	private Timer timer;
@@ -41,40 +49,57 @@ public class Fase extends JPanel implements ActionListener{
     private boolean fim = false;
     private int vlc = 3;
     private int turbo = 10;
-    private SoundPlayer tocar = new SoundPlayer("res\\musica1.wav");
-    private SoundPlayer tocarPowerUp = new SoundPlayer("res\\PowerUp.wav");
-    private SoundPlayer tocarMorte = new SoundPlayer("res\\Morreu.wav");
-    private SoundPlayer tocarBoss = new SoundPlayer("res\\BossEntrance.wav");
-    private SoundPlayer gameover = new SoundPlayer("res\\game-over.wav");
+    private URL tocarURL,tocarPowerUpURL,tocarMorteURL,tocarBossURL,gameoverURL;
+    private SoundPlayer tocar;
+    private SoundPlayer tocarPowerUp ;//= new SoundPlayer("res/PowerUp.wav");
+    private SoundPlayer tocarMorte; //= new SoundPlayer("res/Morreu.wav");
+    private SoundPlayer tocarBoss ;//= new SoundPlayer("res/BossEntrance.wav");
+    private SoundPlayer gameover;// = new SoundPlayer("res/game-over.wav");
     private int contador = 1;
     private boolean mostrarTimer = false;
     private boolean TurboAtivo = false;
     private boolean morteEmAndamento; 
     private boolean fimemandamento;
+    
     public Fase() {
-    	
+    	randomizarMusica();
+    	this.setFocusable(true);
+	    
+	    setDoubleBuffered(true);
+	    
     	emJogo = true;
     	bossAtivo = false;
     	morteEmAndamento = false;
     	fimemandamento = false;
-		setFocusable(true);
-		setDoubleBuffered(true);
-		ImageIcon referencia = new ImageIcon("res\\Fundo.png");
-		
+    	
+		ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("Fundo.png"));
+		player = new Jogador();
+		this.requestFocusInWindow(); 
 		fundo = referencia.getImage();
 		inicializaBoss(false);
 		inicializaInimigos(true);
 		inicializarInimigos2(false,0);
 		inicializaStars();
 		inicializarPoder(false);
-		player = new Jogador();
+		
 		player.load();
 		
 		addKeyListener(new TecladoAdapter());
 
 		timer = new Timer(1,this);
 		timer.start();
-		this.tocar.play(true);
+		tocarPowerUp = new SoundPlayer();
+  	    tocarMorte = new SoundPlayer();
+  	    tocarBoss = new SoundPlayer();
+  	    gameover = new SoundPlayer();
+    	tocarPowerUpURL = getClass().getResource("/PowerUp.wav");
+    	tocarPowerUp.setFile(tocarPowerUpURL);
+		tocarMorteURL = getClass().getResource("/Morreu.wav");
+		tocarMorte.setFile(tocarMorteURL);
+		tocarBossURL = getClass().getResource("/BossEntrance.wav");
+		tocarBoss.setFile(tocarBossURL);
+		gameoverURL = getClass().getResource("/game-over.wav");
+		gameover.setFile(gameoverURL);
 		timerMorte = new Timer(2000, new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -114,7 +139,18 @@ public class Fase extends JPanel implements ActionListener{
 	        
 	
     int i =1;
-   
+    private void randomizarMusica() {
+    	 Random rand = new Random();
+    	 tocar = new SoundPlayer();
+         int musicaAleatoriaIndex = rand.nextInt(musicas.length);
+         
+         tocarURL = getClass().getResource(musicas[musicaAleatoriaIndex]);
+         System.out.print(tocarURL);
+         
+             tocar.setFile(tocarURL);  
+             tocar.play(true);  
+         
+    }
 	public void Morte() {
 		if (morteEmAndamento) {
            
@@ -172,7 +208,8 @@ public class Fase extends JPanel implements ActionListener{
         int y = 100;
         if(i) {
         	boss.add(new Boss1(x, y));
-        	this.tocar.stop();
+        	tocarBoss.play(true);
+        	tocar.stop();
         }else {
         	
         }
@@ -204,15 +241,15 @@ public class Fase extends JPanel implements ActionListener{
 		    }
 			if(player.isTurboDisponivel()) {
 				
-				ImageIcon imagemTurbo= new ImageIcon("res\\TurboDisponivel.gif");
+				ImageIcon imagemTurbo= new ImageIcon(getClass().getClassLoader().getResource("TurboDisponivel.gif"));
 				if(timerMorte.isRunning()) {
 					imagemTurbo.getImage().flush();
 				}
 				graficos.drawImage(imagemTurbo.getImage(),player.getX()-28,player.getY()+10,this);
 			}
 			if(player.isTurbo() ) {
-				ImageIcon imagemFlames= new ImageIcon("res\\Flames.gif");
-				ImageIcon imagemSpeed= new ImageIcon("res\\Speed.gif");
+				ImageIcon imagemFlames= new ImageIcon(getClass().getClassLoader().getResource("Flames.gif"));
+				ImageIcon imagemSpeed= new ImageIcon(getClass().getClassLoader().getResource("Speed.gif"));
 				
 				graficos.drawImage(imagemFlames.getImage(),player.getX()-28,player.getY()+5,this);
 				graficos.drawImage(imagemSpeed.getImage(),player.getX()-10 ,player.getY()-22,this);
@@ -234,6 +271,7 @@ public class Fase extends JPanel implements ActionListener{
 				m.load();
 				graficos.drawImage(m.getImagem(),m.getX(),m.getY(),this);
 			}
+			
 			for(int o = 0;o<enemy1.size();o++) {
 				Enemy1 in = enemy1.get(o);
 				in.load();
@@ -277,13 +315,13 @@ public class Fase extends JPanel implements ActionListener{
 		        valor = pontuacao;  
 		    }
 		    if (fim) {
-		        ImageIcon fimJogo = new ImageIcon("res\\fimdejogo.png");
+		        ImageIcon fimJogo = new ImageIcon(getClass().getClassLoader().getResource("fimdejogo.png"));
 		        graficos.drawImage(fimJogo.getImage(), 0, 0, null);
 		        graficos.drawString("Melhor Pontuação: " + valor, 700, 60);
 		        graficos.drawString("Pontuação: " + pontuacao, 800, 100);
 		        graficos.drawString("Pressione ENTER", 100, 100);
 		    } else {
-		        ImageIcon fimJogo = new ImageIcon("res\\fimdejogo2.png");
+		        ImageIcon fimJogo = new ImageIcon(getClass().getClassLoader().getResource("fimdejogo2.png"));
 		        graficos.drawImage(fimJogo.getImage(), 0, 0, null);
 		        graficos.drawString("Melhor Pontuação: " + valor, 700, 60);
 		        graficos.drawString("Pontuação: " + pontuacao, 800, 100);
@@ -305,9 +343,9 @@ public class Fase extends JPanel implements ActionListener{
 	                contador--;
 	            } else {
 	                timer.stop();
-	                mostrarTimer = false; // Para de mostrar o timer após 5 segundos
+	                mostrarTimer = false; 
 	            }
-	            repaint(); // Atualiza a tela
+	            repaint(); 
 	        }
 	    });
 	    timer.start();
@@ -323,7 +361,7 @@ public class Fase extends JPanel implements ActionListener{
         player.setTurbo(false);
         tocarBoss.stop();
         bossAtivo = false;
-        this.tocar.play(true);
+        randomizarMusica();
         timerTutorial.stop();
         inicializarPoder(false);
         inicializaInimigos(true);
@@ -504,7 +542,7 @@ public class Fase extends JPanel implements ActionListener{
 			if(in.isVisible()) {
 				in.update();
 			}else {
-				this.tocarBoss.stop();
+				tocarBoss.stop();
 				
 				boss.remove(o);
 			}
@@ -691,17 +729,17 @@ public class Fase extends JPanel implements ActionListener{
 		}
 	
 	private class TecladoAdapter extends KeyAdapter {
-		boolean stop =true;
+		boolean i =true;
 		@Override
 		public void keyPressed(KeyEvent e) {
 			player.keyPressed(e);
-			if(e.getKeyCode() == KeyEvent.VK_ESCAPE && emJogo) {
-	        	if(stop == true) {
-	        		stop = false;
+			if(e.getKeyCode() == KeyEvent.VK_ESCAPE && emJogo && !player.isTurbo()) {
+	        	if(i) {
+	        		i = false;
 	        		timer.stop();
 	        		tocar.stop();
 	        	}else {
-	        		stop = true;
+	        		i = true;
 	        		timer.start();
 	        		tocar.play(true);
 	        	}

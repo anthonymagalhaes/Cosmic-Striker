@@ -13,7 +13,7 @@ public class Tiro {
 	
 	private static final int LARGURA = 938; 
 	private static int VELOCIDADE = 8;
-	private static String source= "res\\tiro.png";
+	
 	public Tiro(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -21,7 +21,7 @@ public class Tiro {
 		
 	}
 	public void load() {
-		ImageIcon referencia = new ImageIcon(source);
+		ImageIcon referencia = new ImageIcon(getClass().getClassLoader().getResource("tiro.png"));
 		imagem= referencia.getImage();
 		this.largura = imagem.getWidth(null);
 		this.altura = 7;
@@ -32,6 +32,7 @@ public class Tiro {
 				isVisible = false;
 			}
 	}
+	
 	
 	public Rectangle getBound() {
 		return new Rectangle (x,y,largura,altura);
